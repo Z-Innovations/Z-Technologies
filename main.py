@@ -44,7 +44,9 @@ def api():
 
 @app.route('/__update')
 def update():
-    p = subprocess.run(('git', 'pull', '--git-dir', REPO_LOCATION))
+    p = subprocess.run(('git', 'pull', '--git-dir', REPO_LOCATION), capture_output=True)
     if p.returncode == 0:
         exit()
-    return 'error'
+    if not app.debug:
+        pass#return 'error'
+    return f'error {p.returncode} {p.stdout.decode()} {p.stderr.decode()}'
