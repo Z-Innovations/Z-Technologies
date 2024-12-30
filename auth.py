@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask import Blueprint, request, render_template, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_migrate import Migrate
 
 class Base(DeclarativeBase):
     pass
@@ -10,11 +11,15 @@ class Base(DeclarativeBase):
 class MyLoginManager(LoginManager):
     def __init__(self, app=None, add_context_processor=True):
         self.db = SQLAlchemy(model_class=Base)
+        self.migrate = Migrate(db=self.db)
 
         class User(UserMixin, self.db.Model):
             id: Mapped[int] = mapped_column(primary_key=True)
             name: Mapped[str] # Данил Олегов if empty
             password: Mapped[str]
+            creditcard_number: Mapped[int] = mapped_column(nullable=True)
+            creditcard_valid_till: Mapped[str] = mapped_column(nullable=True)
+            creditcard_3_digits: Mapped[int] = mapped_column(nullable=True)
         self.User = User
 
         self.bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -35,6 +40,7 @@ class MyLoginManager(LoginManager):
         self.db.init_app(app)
         with app.app_context():
             self.db.create_all()
+        self.migrate.init_app(app)
         return super().init_app(app, add_context_processor)
 
     def register(self):

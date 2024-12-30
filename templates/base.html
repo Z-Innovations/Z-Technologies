@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    {% block morehead %}{% endblock %}
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	{% block morehead %}{% endblock %}
 </head>
 <body>
-  <header class="wrapper container">
-    <span class="logo">
-        <a href="/">
-            <img src="http://zaborostroitelnyuniversity.ru/img/zu_logo.png" alt="Logo" class="logo--img">
-            Z-Технологии
-        </a>
-    </span>
-    <nav>
-        <ul>
-          {% if current_user.is_authenticated %}
-            <li><span>{{ current_user.name }}#{{ current_user.id }}</span></li>
-            <li><a href="{{ url_for('auth.logout') }}">Выйти</a></li>
-          {% else %}
-            <li><a href="{{ url_for('auth.register') }}">Регистрация</a></li>
-            <li><a href="{{ url_for('auth.login') }}">Вход</a></li>
-          {% endif %}
-        </ul>
-    </nav>
-    <div class="resizer"></div>
-  </header>
+	<header class="wrapper container">
+		<span class="logo">
+			<a href="/">
+				<img src="http://zaborostroitelnyuniversity.ru/img/zu_logo.png" alt="Logo" class="logo--img">
+				Z-Технологии
+			</a>
+		</span>
+		<nav>
+			<ul>
+				{% if current_user.is_authenticated %}
+				<li><a href="/me">{{ current_user.name }}#{{ current_user.id }}</a></li>
+				<li><a href="{{ url_for('auth.logout') }}">Выйти</a></li>
+				{% else %}
+				<li><a href="{{ url_for('auth.register') }}">Регистрация</a></li>
+				<li><a href="{{ url_for('auth.login') }}">Вход</a></li>
+				{% endif %}
+			</ul>
+		</nav>
+		<div class="resizer"></div>
+	</header>
 
-  <div class="wrapper maincontent">
-    <div class="container">{% block content %}{% endblock %}</div>
-  </div>
+	<div class="wrapper maincontent">
+		<div class="container">{% block content %}{% endblock %}</div>
+	</div>
 </body>
 </html>
