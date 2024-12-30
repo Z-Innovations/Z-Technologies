@@ -1,5 +1,5 @@
 import subprocess
-import time
+import time, sys
 from flask import Flask, request, redirect, url_for, render_template
 from markupsafe import escape
 from auth import MyLoginManager
@@ -58,7 +58,8 @@ def update():
             global pull_in_progress
             time.sleep(2)
             pull_in_progress = False
-            exit()
+            sys.exit()
+            
         Thread(target=f).start()
         print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
         return 'should be OK'
