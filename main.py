@@ -46,6 +46,5 @@ def api():
 def update():
     p = subprocess.run(('git', 'pull', '--git-dir', REPO_LOCATION))
     if p.returncode == 0:
-        return 'should be ok'
-    else:
-        return f'error'
+        exit()
+    return 'error'

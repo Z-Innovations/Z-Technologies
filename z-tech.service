@@ -9,6 +9,7 @@
 [Unit]
 Description=Z-Technologies
 After=network.target
+Restart=always
 
 [Service]
 User=www-data
