@@ -1,14 +1,19 @@
+import subprocess
 from flask import Flask, request, redirect, url_for, render_template
 from markupsafe import escape
-from _secrets import SECRET_KEY
 from auth import MyLoginManager
-from flask_login import current_user, login_user, login_required, logout_user
+from flask_login import current_user, login_required
 import json
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
-app.secret_key = SECRET_KEY
+
+REPO_LOCATION = '/var/www/Z-Technologies/Z-Technologies'
+
+try:
+    from _secrets import SECRET_KEY
+    app.secret_key = SECRET_KEY
+except: pass
 
 mgr = MyLoginManager(app)
 User = mgr.User
@@ -36,3 +41,11 @@ def api():
 # @mgr.unauthorized_handler
 # def unauthorized_handler():
 #     return 'Unauthorized', 401
+
+@app.route('/__update')
+def update():
+    p = subprocess.run(('git', 'pull', '--git-dir', REPO_LOCATION))
+    if p.returncode == 0:
+        return 'should be ok'
+    else:
+        return f'error'
