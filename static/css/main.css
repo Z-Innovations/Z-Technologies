@@ -1,0 +1,305 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    width: 100%;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+.wrapper {
+    color: black;
+    background: #E7E6E6;
+    width: 100%;
+}
+
+.container {
+    width: 50%;
+    margin: 0 auto;
+}
+
+header, header.wrapper {
+    padding: 20px 25%;
+    font-size: 16px;
+    font-weight: 0;
+    background: white;
+    position: sticky;
+    top: 0;
+}
+
+header .logo {
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+}
+
+.logo--img {
+    width: 55px;
+    height: 55px;
+    float: left;
+    margin: -5px 0;
+
+}
+
+header nav {
+    float: right;
+    width: 60%;
+}
+
+header .resizer {
+    clear: both;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    align-content: right;
+    justify-content: space-between;
+}
+
+header nav ul li {
+    display: inline-block;
+}
+
+header nav ul li a, header span.logo a {
+    color: black;
+    transition: all 500ms ease;
+}
+
+
+header nav ul li:not(.button) a:hover, header span.logo a:hover {
+    color: #515151;
+}
+
+header nav ul li.button a {
+    padding: 9px 17px;
+}
+
+header nav ul li.button a:hover {
+    border-radius: 10px;
+}
+
+header nav ul li.button a:hover {
+    background: #3044FF;
+    border-radius: 10px;
+}
+
+
+footer {
+    background: #141414;
+    padding: 50px;
+    color: white;
+}
+
+footer div.blocks {
+    display: flex;
+    justify-content: space-between;
+}
+
+footer div.blocks div .logo {
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+footer .blocks p {
+    width: 60%;
+    margin: 15px 0;
+}
+
+footer .blocks h4 {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+footer .blocks ul {
+    list-style: none;
+
+}
+
+footer .blocks ul li a {
+    margin-top: 7px;
+    color: #e0dcdc;
+
+    transition: all 500ms ease;
+}
+
+footer .blocks ul li a:hover {
+    color: #7d7a7a;
+}
+
+footer hr {
+    margin: 30px 0;
+    border: 0;
+    height: 1px;
+    background: #e0dcdc;
+}
+
+footer div.block a {
+    float: left;
+}
+
+footer div.block p {
+    text-align: center;
+}
+
+footer div.blocks div:has(.logo) {
+    flex: 2;
+}
+footer div.blocks div:not(:has(.logo)) {
+    flex: 1
+}
+
+.separator, hr {
+    height: 4px;
+    /* width: 80vh; */
+    width: auto;
+    background: #7d7a7a;
+    margin-bottom: 20px;
+}
+
+a.button2 {
+    padding: 10px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+a.button, button, div.button a, li.button a {
+    background: #141414;
+    color: #E7E6E6;
+    border: 0;
+    transition: all 500ms ease;
+}
+
+a.button:hover, button:hover, div.button a:hover, li.button a:hover {
+    background: #3044FF;
+}
+
+@media screen and (max-width: 2200px) {
+    .container {
+        width: 98%;
+    }
+    header, header.wrapper {
+        padding: 20px 1%;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    header nav ul {
+        display: inline;
+    }
+
+    .buttons {
+        padding-top: 20px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    header .logo, header nav {
+        float: none;
+    }
+
+    header .resier {
+        clear: none;
+    }
+
+    header nav ul li {
+        display: block;
+        z-index: 1;
+        position: relative;
+        margin-top: 5px;
+    }
+
+    header nav ul .buttons * {
+        display: block; 
+    }
+
+    header nav ul .buttons *:first-of-type {
+        margin-bottom: 10px;
+    }
+
+    header, header.wrapper {
+        position: static;
+        /* padding-bottom: 50px; */
+    }
+
+    /* footer */
+    
+    footer {
+        padding: 25px;
+    }
+    
+    footer div.blocks {
+        display: block;
+    }
+    
+    footer div.blocks div .logo {
+        font-size: 20px;
+    }
+    
+    footer .blocks p {
+        width: 100%;
+        margin: 15px 0;
+    }
+    
+    footer .blocks h4 {
+        font-size: 16px;
+    }
+    
+    footer .blocks ul li {
+        margin-top: 7px;
+    }
+
+    footer .blocks div:not(:has(.logo)) {
+        padding-top: 20px;
+    }
+    
+    /* footer hr {
+        margin: 30px 0;
+        height: 1px;
+    }
+    
+    footer div.block a {
+        float: left;
+    }
+    
+    footer div.block p {
+        text-align: center;
+    }
+    
+    footer div.blocks div:has(.logo) {
+        flex: 2;
+    }
+    footer div.blocks div:not(:has(.logo)) {
+        flex: 1
+    } */
+
+
+    .separator, hr {
+        height: 4px;
+        width: auto;
+        /* margin-bottom: 20px; */
+    
+    }
+
+    .container {
+        width: 98%;
+        margin: 0 auto;
+    }
+}

@@ -50,7 +50,7 @@ class MyLoginManager(LoginManager):
                     self.db.session.commit()
                     login_user(user)
                     return redirect(url_for('protected'))
-        return 'something went wrong'
+        return render_template('info.html', title="something went wrong")
 
     @login_required
     def unregister(self):
@@ -64,7 +64,7 @@ class MyLoginManager(LoginManager):
                     self.db.session.commit()
                     logout_user()
                     return redirect('/')
-        return '<h1>something went wrong</h1>\n<p>Wrong password?</p>'
+        return render_template('info.html', title="something went wrong", extra="Wrong password?")
 
     def login(self):
         if request.method == 'GET':
@@ -76,8 +76,8 @@ class MyLoginManager(LoginManager):
             login_user(user)
             return redirect(url_for('protected'))
 
-        return 'Bad login'
+        return render_template('info.html', title="Bad login")
 
     def logout(self):
         logout_user()
-        return 'Logged out'
+        return render_template('info.html', title="Logged out")

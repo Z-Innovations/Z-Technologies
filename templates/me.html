@@ -4,4 +4,5 @@
 
 {% block content %}
   <h1>Logged in as {{ current_user.name }}#{{ current_user.id }}</h1>
+  <a class="button button2" href="{{ url_for('auth.unregister') }}">Удалить аккаунт</a>
 {% endblock %}
