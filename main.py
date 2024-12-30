@@ -1,9 +1,11 @@
 import subprocess
+import time
 from flask import Flask, request, redirect, url_for, render_template
 from markupsafe import escape
 from auth import MyLoginManager
 from flask_login import current_user, login_required
 import json
+from threading import Thread
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
@@ -46,7 +48,8 @@ def api():
 def update():
     p = subprocess.run(('git', '-C', REPO_LOCATION, 'pull'), capture_output=True)
     if p.returncode == 0:
-        exit()
+        Thread(target=lambda: (time.sleep(1), exit())).start()
+        return 'should be OK'
     if not app.debug:
         return 'error'
     return f'error {p.returncode} {p.stdout.decode()} 0 {p.stderr.decode()}'
