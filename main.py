@@ -44,15 +44,25 @@ def api():
 # def unauthorized_handler():
 #     return 'Unauthorized', 401
 
+pull_in_progress = False
+
 @app.route('/__update')
 def update():
+    global pull_in_progress
+    if pull_in_progress:
+        return 'already in progress'
+    pull_in_progress = True
     p = subprocess.run(('git', '-C', REPO_LOCATION, 'pull'), capture_output=True)
     if p.returncode == 0:
         def f():
+            global pull_in_progress
             time.sleep(2)
+            pull_in_progress = False
             exit()
         Thread(target=f).start()
+        print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
         return 'should be OK'
+    pull_in_progress = False
     if not app.debug:
         return 'error'
-    return f'error {p.returncode} {p.stdout.decode()} 0 {p.stderr.decode()}'
+    return f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
