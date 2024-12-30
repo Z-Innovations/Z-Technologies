@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if mode == 0 %}Register
+{% elif mode == 1 %}Login
+{% else %}Delete account{% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <form action='{% if mode == 0 %}register
+{% elif mode == 1 %}login
+{% else %}unregister{% endif %}' method='POST'>
+    {% if mode == 2 %}
+    <h1>U sure?</h1>
+    <p>Enter your password to confirm</p>
+    {% else %}
+    <label for="name">Name</label>
+    <input type='text' name='name' id='name' placeholder='Олег Данилов'/>
+    {% endif %}
+    <label for="password">Password</label>
+    <input type='password' name='password' id='password' placeholder='password'/>
+    <input type='submit' name='submit'/>
+</form>
+{% endblock %}
