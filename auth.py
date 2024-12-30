@@ -23,13 +23,16 @@ class MyLoginManager(LoginManager):
         self.User = User
 
         self.bp = Blueprint('auth', __name__, url_prefix='/auth')
-        self.bp.route('/register', methods=('GET', 'POST'))(self.register)
-        self.bp.route('/unregister', methods=('GET', 'POST'))(self.unregister)
-        self.bp.route('/login', methods=('GET', 'POST'))(self.login)
-        self.bp.route('/logout')(self.logout)
+        for f in (self.register, self.unregister, self.login, self.edit_password, self.credit_card):
+            self.register_page(f)
+        self.register_page(self.logout, False)
 
         super().__init__(app, add_context_processor)
         self.user_loader(self._user_loader)
+
+    def register_page(self, func, allow_post=True):
+        kw = {'methods': ('GET', 'POST')} if allow_post else {}
+        self.bp.route(f'/{func.__name__}', **kw)(func)
 
     def _user_loader(self, id):
         try:
@@ -46,7 +49,7 @@ class MyLoginManager(LoginManager):
     def register(self):
         match request.method:
             case 'GET':
-                return render_template('login_register.html', mode=0)
+                return render_template('auth/login_register.html', mode=0)
             case 'POST':
                 name, password = request.form['name'], request.form['password']
                 user = self.User.query.filter_by(name=name).first()
@@ -62,7 +65,7 @@ class MyLoginManager(LoginManager):
     def unregister(self):
         match request.method:
             case 'GET':
-                return render_template('login_register.html', mode=2)
+                return render_template('auth/login_register.html', mode=2)
             case 'POST':
                 password = request.form['password']
                 if check_password_hash(current_user.password, password):
@@ -74,7 +77,7 @@ class MyLoginManager(LoginManager):
 
     def login(self):
         if request.method == 'GET':
-            return render_template('login_register.html', mode=1)
+            return render_template('auth/login_register.html', mode=1)
 
         name, password = request.form['name'], request.form['password']
         user = self.User.query.filter_by(name=name).first()
@@ -87,3 +90,34 @@ class MyLoginManager(LoginManager):
     def logout(self):
         logout_user()
         return render_template('info.html', title="Logged out")
+
+    def edit_field(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(current_user, name, value)
+        self.db.session.commit()
+
+    @login_required
+    def edit_password(self):
+        match request.method:
+            case 'GET':
+                return render_template('auth/edit_password.html')
+            case 'POST':
+                old = request.form['old']
+                password = request.form['password']
+                if check_password_hash(current_user.password, old):
+                    self.edit_field(password=generate_password_hash(password))
+                    return render_template('info.html', title="Password changed")
+        return render_template('info.html', title="something went wrong", extra="Wrong password?")
+    
+    @login_required
+    def credit_card(self):
+        match request.method:
+            case 'GET':
+                return render_template('auth/credit_card.html', number=current_user.creditcard_number, validtill=current_user.creditcard_valid_till or '', three=current_user.creditcard_3_digits)
+            case 'POST':
+                number = request.form['number']
+                validtill = request.form['validtill']
+                three = request.form['three']
+                self.edit_field(creditcard_number=number, creditcard_valid_till=validtill, creditcard_3_digits=three)
+                return render_template('info.html', title="всё")
+        return render_template('info.html', title="something went wrong", extra="Wrong password?")

@@ -12,7 +12,7 @@ with requests.Session() as s:
     else:
         s.post(f'{api_url}/login', data={'name': name, 'password': password})
 
-    res = s.get(f'{api_url}/api')
+    res = s.get(f'{api_url}/meapi')
     res = json.loads(res.text)
     print('name:', res['name'])
     print('discriminator:', res['discriminator'])

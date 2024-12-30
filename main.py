@@ -1,3 +1,4 @@
+from pathlib import Path
 import subprocess
 import time, os
 from flask import Flask, request, redirect, url_for, render_template
@@ -32,7 +33,7 @@ def index():
 def protected():
     return render_template('me.html')
 
-@app.route('/api')
+@app.route('/meapi')
 @login_required
 def api():
     return json.dumps({
@@ -45,6 +46,7 @@ def api():
 #     return 'Unauthorized', 401
 
 pull_in_progress = False
+migrate_in_progress = False
 
 @app.route('/__update')
 def update():
@@ -64,6 +66,28 @@ def update():
         print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
         return 'should be OK'
     pull_in_progress = False
+    if not app.debug:
+        return 'error'
+    return f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+
+@app.route('/__migrate')
+def migrate():
+    global migrate_in_progress
+    if migrate_in_progress:
+        return 'already in progress'
+    migrate_in_progress = True
+    p = subprocess.run((Path(REPO_LOCATION).parent / '.venv/bin/flask', '--app', Path(REPO_LOCATION) / 'main', 'db', 'upgrade'), capture_output=True)
+    if p.returncode == 0:
+        def f():
+            global migrate_in_progress
+            time.sleep(2)
+            migrate_in_progress = False
+            os._exit(0)
+
+        Thread(target=f).start()
+        print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
+        return 'should be OK'
+    migrate_in_progress = False
     if not app.debug:
         return 'error'
     return f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'

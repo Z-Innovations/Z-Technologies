@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить или изменить кредитную карту{% endblock %}
+
+{% block content %}
+
+  <form action='credit_card' method='POST'>
+    <label for="number">Номер карты (отридцательный тоже можно)</label>
+    <input type='number' name='number' id='number' placeholder='number' value='{{ number }}'/>
+    <br>
+    <label for="validtill">(Сыр) годен до</label>
+    <input name='validtill' id='validtill' placeholder='10/99' value='{{ validtill }}'/>
+    <br>
+    <label for="three">И <i>три</i> <b>цифры</b> на <u><i>задней</i></u> <h1 style="display: inline;">стороне</h1></label>
+    <input type='number' name='three' id='three' placeholder='111' min="0" max="999" value='{{ three }}'/>
+    <br><input type='submit' name='submit'/>
+</form>
+{% endblock %}
