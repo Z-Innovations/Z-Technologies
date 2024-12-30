@@ -48,7 +48,10 @@ def api():
 def update():
     p = subprocess.run(('git', '-C', REPO_LOCATION, 'pull'), capture_output=True)
     if p.returncode == 0:
-        Thread(target=lambda: (time.sleep(1), exit())).start()
+        def f():
+            time.sleep(2)
+            exit()
+        Thread(target=f).start()
         return 'should be OK'
     if not app.debug:
         return 'error'
