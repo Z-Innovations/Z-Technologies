@@ -17,6 +17,7 @@ class MyLoginManager(LoginManager):
             id: Mapped[int] = mapped_column(primary_key=True)
             name: Mapped[str] # Данил Олегов if empty
             password: Mapped[str]
+            discriminator: Mapped[int] = mapped_column(nullable=True)
             creditcard_number: Mapped[int] = mapped_column(nullable=True)
             creditcard_valid_till: Mapped[str] = mapped_column(nullable=True)
             creditcard_3_digits: Mapped[int] = mapped_column(nullable=True)

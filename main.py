@@ -62,7 +62,7 @@ def update():
                 global pull_in_progress
                 time.sleep(2)
                 pull_in_progress = False
-                os._exit(0)
+                reload()
                 
             Thread(target=f).start()
             print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
@@ -84,7 +84,7 @@ def migrate():
             global migrate_in_progress
             time.sleep(2)
             migrate_in_progress = False
-            os._exit(0)
+            reload()
 
         Thread(target=f).start()
         print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
@@ -96,4 +96,6 @@ def migrate():
 
 @app.route('/__reload')
 def reload():
-    os._exit(0)
+    #os._exit(0)
+    subprocess.run(('systemctl', 'restart', 'z-tech'))
+    return "<h1>something's wrong</h1>\n\ndid not restart?\n\nrestart pending?"
