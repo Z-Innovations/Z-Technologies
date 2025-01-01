@@ -67,6 +67,7 @@ def update():
             Thread(target=f).start()
             print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
             return 'should be OK'
+    print(f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}')
     pull_in_progress = False
     if not app.debug:
         return 'error'
