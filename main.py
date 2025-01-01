@@ -63,11 +63,13 @@ def update():
                 time.sleep(2)
                 pull_in_progress = False
                 reload()
-                
+
             Thread(target=f).start()
             print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
             return 'should be OK'
-    with open(Path(REPO_LOCATION).parent / 'logs/1.txt', 'w') as f: # pyright:ignore[reportAssignmentType]
+    path = Path(REPO_LOCATION).parent / 'logs'
+    path.mkdir(parents=True, exist_ok=True)
+    with open(path / '1.txt', 'w') as f: # pyright:ignore[reportAssignmentType]
         f.write(f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}')
     pull_in_progress = False
     if not app.debug:
