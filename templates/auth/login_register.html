@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{% if mode == 0 %}Register
-{% elif mode == 1 %}Login
-{% else %}Delete account{% endif %}
+{% if mode == 0 %}Регистрация
+{% elif mode == 1 %}Вход
+{% else %}Удаление аккаунт{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -15,11 +15,16 @@
     <h1>U sure?</h1>
     <p>Enter your password to confirm</p>
     {% else %}
-    <label for="name">Name</label>
+    <label for="name">Имя</label>
     <input type='text' name='name' id='name' placeholder='Олег Данилов'/>
     {% endif %}
-    <label for="password">Password</label>
-    <input type='password' name='password' id='password' placeholder='password'/>
-    <input type='submit' name='submit'/>
+    <label for="password">Пароль</label>
+    <input type='password' name='password' id='password'/>
+    <input type='submit' name='submit' value="Продолжить"/>
+    {% if mode == 1 %}
+    <br><br><br>
+    <h1>Забыли пароль?</h1>
+    Напишите нам на <a href="mailto:roundedrectangle0@gmail.com">почту</a>
+    {% endif %}
 </form>
 {% endblock %}
