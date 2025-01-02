@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 import subprocess
 import time, os
@@ -7,11 +8,21 @@ from auth import MyLoginManager
 from flask_login import current_user, login_required
 import json
 from threading import Thread
+from logging import FileHandler
+from datetime import datetime
+from uuid import uuid4
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 
 REPO_LOCATION = '/var/www/Z-Technologies/Z-Technologies'
+
+if not app.debug:
+    log_path = Path(REPO_LOCATION).parent / 'logs'
+    log_path.mkdir(parents=True, exist_ok=True)
+    log_handler = FileHandler(log_path / ("z-tech-log--"+datetime.now().strftime("%Y-%m-%d--%H-%M-%S")+f"--{uuid4()}.txt"))
+    log_handler.setLevel(logging.INFO)
+    app.logger.addHandler(log_handler)
 
 try:
     from _secrets import SECRET_KEY
@@ -67,14 +78,10 @@ def update():
             Thread(target=f).start()
             print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
             return 'should be OK'
-    path = Path(REPO_LOCATION).parent / 'logs'
-    path.mkdir(parents=True, exist_ok=True)
-    with open(path / '1.txt', 'w') as f: # pyright:ignore[reportAssignmentType]
-        f.write(f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}')
+    l = f'/__update failed: {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+    app.logger.error(l)
     pull_in_progress = False
-    if not app.debug:
-        return 'error'
-    return f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+    return 'error' if app.debug else l
 
 @app.route('/__migrate')
 def migrate():
@@ -93,10 +100,10 @@ def migrate():
         Thread(target=f).start()
         print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
         return 'should be OK'
+    l = f'/__migrate failed: {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+    app.logger.error(l)
     migrate_in_progress = False
-    if not app.debug:
-        return 'error'
-    return f'error {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+    return 'error' if app.debug else l
 
 @app.route('/__reload')
 def reload():
