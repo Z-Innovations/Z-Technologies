@@ -76,7 +76,7 @@ def update():
                 reload()
 
             Thread(target=f).start()
-            print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
+            app.logger.info(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
             return 'should be OK'
     l = f'/__update failed: {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
     app.logger.error(l)
