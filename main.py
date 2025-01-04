@@ -23,9 +23,10 @@ if not app.debug:
     log_path = Path(REPO_LOCATION).parent / 'logs'
     log_path.mkdir(parents=True, exist_ok=True)
     log_handler = FileHandler(log_path / ("z-tech-log--"+datetime.now().strftime("%Y-%m-%d--%H-%M-%S")+f"--{uuid4()}.txt"))
-    #log_handler.setLevel(logging.INFO) # .NOTSET
+    log_handler.setLevel(logging.INFO)
+    log_handler.setFormatter(ColorfulFormatter())
     app.logger.addHandler(log_handler)
-    app.logger.critical("Started (test)")
+app.logger.critical("Log initialized")
 
 try:
     from _secrets import SECRET_KEY
