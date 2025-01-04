@@ -25,6 +25,7 @@ if not app.debug:
     log_handler = FileHandler(log_path / ("z-tech-log--"+datetime.now().strftime("%Y-%m-%d--%H-%M-%S")+f"--{uuid4()}.txt"))
     #log_handler.setLevel(logging.INFO) # .NOTSET
     app.logger.addHandler(log_handler)
+    app.logger.critical("Started (test)")
 
 try:
     from _secrets import SECRET_KEY
@@ -77,8 +78,8 @@ def update():
                 pull_in_progress = False
                 reload()
 
-            Thread(target=f).start()
             app.logger.info(construct_debug_info('__update', p, p1))
+            Thread(target=f).start()
             return 'should be OK'
         l = 'migrate'
     else:
@@ -102,8 +103,8 @@ def migrate():
             migrate_in_progress = False
             reload()
 
-        Thread(target=f).start()
         app.logger.info(construct_debug_info('__migrate', p))
+        Thread(target=f).start()
         return 'should be OK'
     l = construct_debug_info('__migrate', p, failed_at='migrate')
     app.logger.error(l)
