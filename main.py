@@ -12,6 +12,8 @@ from logging import FileHandler
 from datetime import datetime
 from uuid import uuid4
 
+from utils import *
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 
@@ -67,8 +69,8 @@ def update():
     pull_in_progress = True
     p = subprocess.run(('git', '-C', REPO_LOCATION, 'pull'), capture_output=True)
     if p.returncode == 0:
-        p = subprocess.run((Path(REPO_LOCATION).parent / '.venv/bin/flask', '--app', Path(REPO_LOCATION) / 'main', 'db', 'upgrade'), capture_output=True)
-        if p.returncode == 0:
+        p1 = subprocess.run((Path(REPO_LOCATION).parent / '.venv/bin/flask', '--app', Path(REPO_LOCATION) / 'main', 'db', 'upgrade'), capture_output=True)
+        if p1.returncode == 0:
             def f():
                 global pull_in_progress
                 time.sleep(2)
@@ -76,9 +78,12 @@ def update():
                 reload()
 
             Thread(target=f).start()
-            app.logger.info(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
+            app.logger.info(construct_debug_info('__update', p, p1))
             return 'should be OK'
-    l = f'/__update failed: {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+        l = 'migrate'
+    else:
+        l = 'git pull'
+    l = construct_debug_info('__update', p, p1, failed_at=l)
     app.logger.error(l)
     pull_in_progress = False
     return 'error' if app.debug else l
@@ -98,9 +103,9 @@ def migrate():
             reload()
 
         Thread(target=f).start()
-        print(f"Exiting... {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}")
+        app.logger.info(construct_debug_info('__migrate', p))
         return 'should be OK'
-    l = f'/__migrate failed: {p.returncode}!!{p.stdout.decode()}!!{p.stderr.decode()}'
+    l = construct_debug_info('__migrate', p, failed_at='migrate')
     app.logger.error(l)
     migrate_in_progress = False
     return 'error' if app.debug else l
