@@ -1,3 +1,5 @@
+# USE DOCKER INSTEAD!!!!!!!!!!!!!!!!
+
 # setup:
 # sudo mkdir -p /var/www/Z-Technologies && cd /var/www/Z-Technologies
 # sudo chown -R www-data:www-data . 

@@ -28,10 +28,7 @@ if not app.debug:
     app.logger.addHandler(log_handler)
 app.logger.critical("Log initialized")
 
-try:
-    from _secrets import SECRET_KEY
-    app.secret_key = SECRET_KEY
-except: pass
+app.secret_key = os.environ.get('SECRET_KEY')
 
 mgr = MyLoginManager(app)
 User = mgr.User

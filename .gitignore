@@ -173,3 +173,4 @@ cython_debug/
 
 secrets.py
 _secrets.py
+app.env
