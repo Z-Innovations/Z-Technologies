@@ -17,9 +17,9 @@ from utils import *
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 
-REPO_LOCATION = '/var/www/Z-Technologies/Z-Technologies'
+REPO_LOCATION = os.environ.get('REPO_LOCATION')
 
-if not app.debug:
+if not app.debug and REPO_LOCATION:
     log_path = Path(REPO_LOCATION).parent / 'logs'
     log_path.mkdir(parents=True, exist_ok=True)
     log_handler = FileHandler(log_path / ("z-tech-log--"+datetime.now().strftime("%Y-%m-%d--%H-%M-%S")+f"--{uuid4()}.txt"))
@@ -65,6 +65,8 @@ def update():
     global pull_in_progress
     if pull_in_progress:
         return 'already in progress'
+    if not REPO_LOCATION:
+        return 'REPO_LOCATION not set'
     pull_in_progress = True
     p = subprocess.run(('git', '-C', REPO_LOCATION, 'pull'), capture_output=True)
     if p.returncode == 0:
@@ -92,6 +94,8 @@ def migrate():
     global migrate_in_progress
     if migrate_in_progress:
         return 'already in progress'
+    if not REPO_LOCATION:
+        return 'REPO_LOCATION not set'
     migrate_in_progress = True
     p = subprocess.run((Path(REPO_LOCATION).parent / '.venv/bin/flask', '--app', Path(REPO_LOCATION) / 'main', 'db', 'upgrade'), capture_output=True)
     if p.returncode == 0:
