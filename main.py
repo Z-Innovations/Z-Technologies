@@ -26,7 +26,7 @@ if not app.debug and REPO_LOCATION:
     log_handler.setLevel(logging.INFO)
     log_handler.setFormatter(ColorfulFormatter())
     app.logger.addHandler(log_handler)
-app.logger.critical("Log initialized")
+# app.logger.critical("Log initialized")
 
 app.secret_key = os.environ.get('SECRET_KEY')
 
