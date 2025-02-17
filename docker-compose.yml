@@ -1,0 +1,14 @@
+services:
+  z-tech:
+    build: .
+    container_name: z-tech
+    environment:
+      #- FLASK_ENV=development
+      ## Позволяет отслеживать процесс работы приложения в командной строке
+      - PYTHONUNBUFFERED=True
+    restart: unless-stopped
+    volumes:
+      - .:/Z-Technologies
+    ports:
+      - "5001:5000"
+    command: python3 main.py

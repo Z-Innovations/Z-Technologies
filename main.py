@@ -117,3 +117,6 @@ def reload():
     #os._exit(0)
     subprocess.run(('systemctl', 'restart', 'z-tech'))
     return "<h1>something's wrong</h1>\n\ndid not restart?\n\nrestart pending?"
+
+if __name__ == '__main__':
+   app.run(host='0.0.0.0')
