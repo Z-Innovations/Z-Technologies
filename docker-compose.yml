@@ -6,9 +6,24 @@ services:
       #- FLASK_ENV=development
       ## Позволяет отслеживать процесс работы приложения в командной строке
       - PYTHONUNBUFFERED=True
-    restart: unless-stopped
+      - DATABASE_URI=postgresql://postgres_user:postgres_password@postgres/postgres_db
+    restart: always
     volumes:
       - .:/Z-Technologies
     ports:
-      - "5001:5000"
+      - 5001:5000
     command: python3 main.py
+  postgres:
+    container_name: postgresql-z-tech
+    image: postgres:latest
+    volumes:
+      - postgres-z-tech-data:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+volumes:
+  postgresql-z-tech:

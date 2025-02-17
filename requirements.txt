@@ -2,3 +2,4 @@ flask
 flask-login
 Flask-SQLAlchemy
 Flask-Migrate
+psycopg2

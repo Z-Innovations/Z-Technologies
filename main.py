@@ -15,7 +15,7 @@ from uuid import uuid4
 from utils import *
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 
 REPO_LOCATION = '/var/www/Z-Technologies/Z-Technologies'
 
