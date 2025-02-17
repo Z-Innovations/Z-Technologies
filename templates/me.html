@@ -4,14 +4,12 @@
 
 {% block content %}
   <h1>Logged in as {% if current_user.name is not none %}
-    {{ current_user.name }}
-    {% else %}
-    Олег Данилов
-    {% endif %}{% if current_user.discriminator is not none %}
-    #{{ current_user.discriminator }}
+    {{ current_user.name }}{% else %}
+    Олег Данилов{% endif %}{% if current_user.discriminator is not none %}#{{ current_user.discriminator }}
     {% endif %}
   </h1>
-  <a class="button button2" href="{{ url_for('auth.unregister') }}">Удалить аккаунт</a>
+  {% if current_user.name is not none %}<a class="button button2" href="{{ url_for('auth.unregister') }}">Удалить аккаунт</a>{% endif %}
   <a class="button button2" href="{{ url_for('auth.edit_password') }}">Сменить пароль</a>
   <a class="button button2" href="{{ url_for('auth.credit_card') }}">Добавить или изменить банковскою карту</a>
+  {% if current_user.name is not none %}<a class="button button2" href="{{ url_for('auth.switch_to_discriminator') }}">Олегоданилезироваться</a>{% endif %}
 {% endblock %}

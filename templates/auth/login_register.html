@@ -6,17 +6,60 @@
 {% else %}Удаление аккаунт{% endif %}
 {% endblock %}
 
+{% if mode != 2 %}
+{% block morehead %}<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>{% endblock %}{% endif %}
+
 {% block content %}
 
   <form action='{% if mode == 0 %}register
 {% elif mode == 1 %}login
 {% else %}unregister{% endif %}' method='POST'>
+    <noscript><h1>SITE WILL NOT WORK WITHOUT JS!</h1></noscript>
     {% if mode == 2 %}
     <h1>U sure?</h1>
     <p>Enter your password to confirm</p>
     {% else %}
-    <label for="name">Имя</label>
-    <input type='text' name='name' id='name' placeholder='Олег Данилов'/>
+    <fieldset id="modeSelection">
+      <legend>Режим</legend>
+
+      <div>
+        <input type="radio" id="oleg" name="mode" value="oleg" checked>
+        <label for="olef">Олег Данилов</label>
+      </div>
+
+      <div>
+        <input type="radio" id="custom" name="mode" value="custom">
+        <label for="Собственный">Собственный</label>
+      </div>
+    </fieldset>
+    <div id="namefield" style="display: none">
+      <label for="name">Имя</label>
+      <input type='text' name='name' id='name' placeholder='Олег Данилов'/>
+    </div>
+    <script>
+      $('#modeSelection div input').click(() => {
+        if ($('#oleg').is(':checked')) {
+          $('#namefield').css('display','none');
+          $('#name').val('');
+          {% if mode == 1 %}
+          $('#discriminatorfield').css('display', 'block');
+          {% endif %}
+        } else {
+          $('#namefield').css('display', 'block');
+          {% if mode == 1 %}
+          $('#discriminatorfield').css('display', 'none');
+          $('#discriminator').val('');
+          {% endif %}
+        }
+      });
+      $('#oleg').prop('checked', true)
+    </script>
+    {% endif %}
+    {% if mode == 1 %}
+    <div id="discriminatorfield">
+      <label for="name">Олег Данилов#</label>
+      <input type='text' name='discriminator' id='discriminator' placeholder='1'/>
+    </div>
     {% endif %}
     <label for="password">Пароль</label>
     <input type='password' name='password' id='password'/>

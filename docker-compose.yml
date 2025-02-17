@@ -7,7 +7,7 @@ services:
       #- FLASK_ENV=development
       ## Позволяет отслеживать процесс работы приложения в командной строке
       - PYTHONUNBUFFERED=True
-      - DATABASE_URI=postgresql://postgres_user:postgres_password@postgres/postgres_db
+      - DATABASE_URI=postgresql://postgres_user:postgres_password@postgres/postgres
     restart: always
     volumes:
       - .:/Z-Technologies
