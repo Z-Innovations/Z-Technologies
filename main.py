@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 import subprocess
 import time, os
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, jsonify
 from markupsafe import escape
 from auth import MyLoginManager
 from flask_login import current_user, login_required
@@ -48,9 +48,15 @@ def protected():
 @app.route('/meapi')
 @login_required
 def api():
-    return json.dumps({
+    return jsonify({
         'name': current_user.name,
-        'discriminator': current_user.id,
+        'id': current_user.id,
+        'discriminator': current_user.discriminator,
+        'credit_card': {
+            'number': current_user.creditcard_number,
+            'valid_till': current_user.creditcard_valid_till,
+            '3_digits': current_user.creditcard_3_digits,
+        },
     })
 
 # @mgr.unauthorized_handler
