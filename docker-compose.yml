@@ -21,7 +21,7 @@ services:
     volumes:
       - postgres-z-tech-data:/var/lib/postgresql/data/pgdata
     restart: unless-stopped
-    env-file: app.env
+    env_file: secrets.env
     environment:
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_password
