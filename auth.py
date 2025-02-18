@@ -55,7 +55,7 @@ class MyLoginManager(LoginManager):
     def register(self):
         match request.method:
             case 'GET':
-                return render_template('auth/login_register.html', mode=0, allow_custom=not ONLY_DISCRIMINATOR)
+                return render_template('auth/login_register.html', mode=0, only_discriminator=ONLY_DISCRIMINATOR)
             case 'POST':
                 password = request.form.get('password', None)
                 if not password:
@@ -80,6 +80,8 @@ class MyLoginManager(LoginManager):
 
     @login_required
     def unregister(self):
+        if not current_user.name:
+            return render_template('info.html', title="Олегоданилизированные аккаунты не могут быть удалены", extra="можете написать на почту внизу и рассказать зачем вам удалять его, тогда мы подумаем над этим")
         match request.method:
             case 'GET':
                 return render_template('auth/login_register.html', mode=2)
@@ -146,6 +148,8 @@ class MyLoginManager(LoginManager):
     
     @login_required
     def switch_to_discriminator(self):
+        if not current_user.name:
+            return render_template('info.html', title="Ре-олегоданилезация не требуется")
         match request.method:
             case 'GET':
                 return render_template('auth/edit_password.html', switch_to_discriminator=True)
