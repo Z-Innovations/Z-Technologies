@@ -11,5 +11,12 @@
   {% if current_user.name is not none %}<a class="button button2" href="{{ url_for('auth.unregister') }}">Удалить аккаунт</a>{% endif %}
   <a class="button button2" href="{{ url_for('auth.edit_password') }}">Сменить пароль</a>
   <a class="button button2" href="{{ url_for('auth.credit_card') }}">Добавить или изменить банковскою карту</a>
-  {% if current_user.name is not none %}<a class="button button2" href="{{ url_for('auth.switch_to_discriminator') }}">Олегоданилезироваться</a>{% endif %}
+  {% if current_user.name is not none %}
+  <br><br><br>
+  <a class="button2 fancybutton" href="{{ url_for('auth.switch_to_discriminator') }}">
+    Олегоданилезироваться
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmv0jG389XbmVEDxWLQExEY_om-zby6amNlQ&s" alt="FREE" class="ribbon">
+  </a>
+  {% endif %}
+  <br>
 {% endblock %}

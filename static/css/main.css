@@ -303,3 +303,33 @@ a.button:hover, button:hover, div.button a:hover, li.button a:hover {
         margin: 0 auto;
     }
 }
+
+.fancybutton, .fancybutton img.ribbon {
+    transition: all 500ms ease;
+}
+
+.fancybutton {
+    background: linear-gradient(to bottom right, gold, rgb(148, 126, 2));
+    color: black;
+    position: relative;
+}
+
+.fancybutton img.ribbon {
+    visibility: hidden;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 50px;
+    height: 20px;
+}
+
+.fancybutton:hover {
+    background: linear-gradient(to bottom right, rgb(173, 149, 11), rgb(231, 202, 35));
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.fancybutton:hover img.ribbon {
+    visibility: visible;
+    rotate: 30deg;
+}
