@@ -125,5 +125,10 @@ def reload():
     subprocess.run(('systemctl', 'restart', 'z-tech'))
     return "<h1>something's wrong</h1>\n\ndid not restart?\n\nrestart pending?"
 
+@app.route('/users')
+def users():
+    users = User.query.all()
+    return render_template('users.html', users=users)
+
 if __name__ == '__main__':
    app.run(host='0.0.0.0')
