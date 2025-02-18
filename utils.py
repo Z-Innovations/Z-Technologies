@@ -1,6 +1,6 @@
 import subprocess
 import logging
-import os
+from flask import has_request_context, request
 
 # __all__ = [
 #     'construct_process_info',
@@ -40,6 +40,12 @@ class ColorfulFormatter(logging.Formatter):
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
+    
+
+class RequestFormatter(logging.Formatter):
+    def format(self, record):
+        record.original_ip = request.headers.get('CF-Connecting-IP', None) if has_request_context() else None
+        return super().format(record)
 
 # def get_db_url():
 #     g = os.environ.get

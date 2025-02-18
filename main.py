@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 import time, os
 from flask import Flask, request, redirect, url_for, render_template, jsonify
+from flask.logging import default_handler
 from markupsafe import escape
 from auth import MyLoginManager
 from flask_login import current_user, login_required
@@ -18,16 +19,10 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 # app.config['SQLALCHEMY_ECHO'] = True
 
-REPO_LOCATION = os.environ.get('REPO_LOCATION')
+default_handler.setFormatter(RequestFormatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s (IP: %(original_ip)s)'))
+logging.root.addHandler(default_handler)
 
-if not app.debug and REPO_LOCATION:
-    log_path = Path(REPO_LOCATION).parent / 'logs'
-    log_path.mkdir(parents=True, exist_ok=True)
-    log_handler = FileHandler(log_path / ("z-tech-log--"+datetime.now().strftime("%Y-%m-%d--%H-%M-%S")+f"--{uuid4()}.txt"))
-    log_handler.setLevel(logging.INFO)
-    log_handler.setFormatter(ColorfulFormatter())
-    app.logger.addHandler(log_handler)
-# app.logger.critical("Log initialized")
+REPO_LOCATION = os.environ.get('REPO_LOCATION')
 
 app.secret_key = os.environ.get('SECRET_KEY')
 
