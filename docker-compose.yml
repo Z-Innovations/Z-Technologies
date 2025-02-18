@@ -5,9 +5,10 @@ services:
     env_file: secrets.env
     environment:
       #- FLASK_ENV=development
-      ## Позволяет отслеживать процесс работы приложения в командной строке
-      - PYTHONUNBUFFERED=True
+      - PYTHONUNBUFFERED=True # Позволяет отслеживать процесс работы приложения в командной строке
       - DATABASE_URI=postgresql://postgres_user:postgres_password@postgres/postgres
+      #- SECRET_KEY=obviouslynotsecret
+      #- ONLY_DISCRIMINATOR=False
     restart: always
     volumes:
       - .:/Z-Technologies
@@ -27,7 +28,6 @@ services:
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
-      #SECRET_KEY: changeme
     # For debugging:
     #ports:
     #  - 5432:5432

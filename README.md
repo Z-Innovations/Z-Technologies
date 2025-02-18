@@ -8,3 +8,4 @@ Env variables for secrets.env:
 
 - SECRET_KEY
 - REPO_LOCATION (for logging and reloading and stuff, not tested with docker yet)
+- ONLY_DISCRIMINATOR

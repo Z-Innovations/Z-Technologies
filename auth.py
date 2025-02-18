@@ -5,8 +5,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask import Blueprint, request, render_template, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_migrate import Migrate
+import os
 
-ONLY_DISCRIMINATOR = False
+ONLY_DISCRIMINATOR = os.environ.get('ONLY_DISCRIMINATOR', False)
 
 class Base(DeclarativeBase):
     pass
