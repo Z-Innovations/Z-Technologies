@@ -16,6 +16,7 @@ from utils import *
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
+# app.config['SQLALCHEMY_ECHO'] = True
 
 REPO_LOCATION = os.environ.get('REPO_LOCATION')
 

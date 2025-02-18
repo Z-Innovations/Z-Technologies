@@ -1,6 +1,6 @@
 from flask_login import UserMixin, LoginManager, current_user, login_user, login_required, logout_user
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import Sequence
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from flask import Blueprint, request, render_template, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -16,11 +16,12 @@ class MyLoginManager(LoginManager):
         self.db = SQLAlchemy(model_class=Base)
         self.migrate = Migrate(db=self.db)
 
+        self.discriminator_seq = Sequence('user_discriminator_seq', start=1, optional=True)
         class User(UserMixin, self.db.Model):
             id: Mapped[int] = mapped_column(primary_key=True)
             name: Mapped[str | None] = mapped_column(unique=True) # Олег Данилов if empty
             password: Mapped[str]
-            discriminator: Mapped[int | None] = mapped_column(unique=True)
+            discriminator: Mapped[int | None] = mapped_column(self.discriminator_seq, unique=True)
             creditcard_number: Mapped[int | None]
             creditcard_valid_till: Mapped[str | None]
             creditcard_3_digits: Mapped[int | None]
@@ -49,15 +50,11 @@ class MyLoginManager(LoginManager):
             self.db.create_all()
         self.migrate.init_app(app)
         return super().init_app(app, add_context_processor)
-    
-    @property
-    def next_discriminator(self):
-        return (self.User.query.with_entities(func.max(self.User.discriminator)).scalar() or 0)+1
 
     def register(self):
         match request.method:
             case 'GET':
-                return render_template('auth/login_register.html', mode=0)
+                return render_template('auth/login_register.html', mode=0, allow_custom=not ONLY_DISCRIMINATOR)
             case 'POST':
                 password = request.form.get('password', None)
                 if not password:
@@ -73,7 +70,7 @@ class MyLoginManager(LoginManager):
                         return render_template('info.html', title="user with this name already exists")
                     user = self.User(name=name, password=generate_password_hash(password))
                 else:
-                    user = self.User(discriminator=self.next_discriminator, password=generate_password_hash(password))
+                    user = self.User(discriminator=self.discriminator_seq.next_value(), password=generate_password_hash(password))
                 self.db.session.add(user)
                 self.db.session.commit()
                 login_user(user)
@@ -154,6 +151,6 @@ class MyLoginManager(LoginManager):
             case 'POST':
                 password = request.form['password']
                 if check_password_hash(current_user.password, password):
-                    self.edit_field(name=None, discriminator=self.next_discriminator)
+                    self.edit_field(name=None, discriminator=self.discriminator_seq.next_value())
                     return render_template('info.html', title="Success")
         return render_template('info.html', title="something went wrong", extra="Wrong password?")
