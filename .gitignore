@@ -174,4 +174,7 @@ cython_debug/
 secrets.py
 _secrets.py
 secrets.env
-/dump*.sql # Backups
+# Backups
+/dump*.sql
+# Logs
+/logs*.txt

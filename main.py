@@ -41,6 +41,7 @@ def log_after_request(response: Response):
     return response
 
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
+app.logger.setLevel(logging.DEBUG)
 
 # class MyFileHandler(FileHandler):
 #     def handle(self, record) -> bool:

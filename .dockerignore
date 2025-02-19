@@ -2,3 +2,4 @@ README.md
 z-tech.service
 docker-compose.yml
 /dump*.sql
+/logs*.txt
