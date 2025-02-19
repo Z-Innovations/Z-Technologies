@@ -1,6 +1,6 @@
+from enum import Enum
 import subprocess
 import logging
-from flask import has_request_context, request
 
 # __all__ = [
 #     'construct_process_info',
@@ -20,32 +20,37 @@ def construct_debug_info(name: str, *procs: subprocess.CompletedProcess, failed_
     return f'{name} was called/requested. Did fail?: {fail_info}.' \
             + (f'\nProcess Info (total {len(procs)}):\n\n{procs_info}' if procs_info is not None else "")
 
-class ColorfulFormatter(logging.Formatter):
-    grey = "\x1b[38;20m"
-    yellow = "\x1b[33;20m"
-    red = "\x1b[31;20m"
-    bold_red = "\x1b[31;1m"
-    reset = "\x1b[0m"
-    _format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+class AnsiStyleCode(Enum):
+    bold = 1
+    red = 31
+    green = 32
+    yellow = 33
+    magenta = 35
+    cyan = 36
 
-    FORMATS = {
-        logging.DEBUG: grey + _format + reset,
-        logging.INFO: grey + _format + reset,
-        logging.WARNING: yellow + _format + reset,
-        logging.ERROR: red + _format + reset,
-        logging.CRITICAL: bold_red + _format + reset
-    }
+def ansi_style(value: str, *styles: str) -> str:
+    for style in styles:
+        value = f"\x1b[{AnsiStyleCode[style].value}m{value}"
 
-    def format(self, record):
-        log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)
-    
+    return f"{value}\x1b[0m"
 
-class RequestFormatter(logging.Formatter):
-    def format(self, record):
-        record.original_ip = request.headers.get('CF-Connecting-IP', None) if has_request_context() else None
-        return super().format(record)
+def colorify_request(msg: str, status: int | str):
+    status = str(status)
+    match status:
+        case '200': # Success
+            return msg
+        case '304': # Resource Not Modified
+            return ansi_style(msg, 'cyan')
+        case '404': # Resource Not Found
+            return ansi_style(msg, 'yellow')
+    match status[0]:
+        case '1': # Informational
+            return ansi_style(msg, 'bold')
+        case '3': # Redirection
+            return ansi_style(msg, 'green')
+        case '4': # Client Error
+            return ansi_style(msg, 'bold', 'red')
+    return ansi_style(msg, 'bold', 'magenta') # 5xx Server Error or anything else
 
 # def get_db_url():
 #     g = os.environ.get

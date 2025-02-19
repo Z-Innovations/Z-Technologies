@@ -2,16 +2,13 @@ import logging
 from pathlib import Path
 import subprocess
 import time, os
-from flask import Flask, request, redirect, url_for, render_template, jsonify
-from flask.logging import default_handler
+from flask import Flask, Response, request, redirect, url_for, render_template, jsonify
 from markupsafe import escape
+from flask.logging import default_handler
 from auth import MyLoginManager
 from flask_login import current_user, login_required
-import json
 from threading import Thread
 from logging import FileHandler
-from datetime import datetime
-from uuid import uuid4
 
 from utils import *
 
@@ -19,17 +16,41 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 # app.config['SQLALCHEMY_ECHO'] = True
 
-default_handler.setFormatter(RequestFormatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s (IP: %(original_ip)s)'))
-logging.root.addHandler(default_handler)
-
 REPO_LOCATION = os.environ.get('REPO_LOCATION')
 
 app.secret_key = os.environ.get('SECRET_KEY')
 
 mgr = MyLoginManager(app)
 User = mgr.User
-
 app.register_blueprint(mgr.bp)
+
+# @app.before_request
+# def log_before_request():
+#     app.logger.info('Request started: %s %s "%s %s %s"', request.remote_addr, request.headers.get('CF-Connecting-IP'), request.method, request.endpoint, request.environ.get('SERVER_PROTOCOL'))
+
+@app.after_request
+def log_after_request(response: Response):
+    app.logger.info(f'Request: %s (%s) {colorify_request("%s %s %s", response.status_code)} %s',
+        request.remote_addr,
+        request.headers.get('CF-Connecting-IP', 'No CF original IP'),
+        request.method,
+        request.full_path,
+        request.environ.get('SERVER_PROTOCOL'),
+        response.status,
+    )
+    return response
+
+logging.getLogger('werkzeug').setLevel(logging.ERROR)
+
+# class MyFileHandler(FileHandler):
+#     def handle(self, record) -> bool:
+#         print("Handling", record)
+#         return super().handle(record)
+
+# file_handler = FileHandler('error.log')
+# file_handler.setLevel(logging.DEBUG)
+# file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s'))
+# app.logger.addHandler(file_handler)
 
 @app.route('/')
 @app.route('/index')
@@ -55,9 +76,9 @@ def api():
         },
     })
 
-# @mgr.unauthorized_handler
-# def unauthorized_handler():
-#     return 'Unauthorized', 401
+@mgr.unauthorized_handler
+def unauthorized_handler():
+    return render_template('info.html', title="Unauthorized 401", extra="The server could not verify that you are authorized to access the URL requested. You either supplied the wrong credentials (e.g. a bad password), or your browser doesn't understand how to supply the credentials required."), 401
 
 pull_in_progress = False
 migrate_in_progress = False
